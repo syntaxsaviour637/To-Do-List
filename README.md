@@ -29,3 +29,20 @@ This app allows users to manage daily tasks as well as create **custom task list
 
 ## 📂 Project Structure
 
+├── public/ # Static files (CSS, images)
+├── views/ # EJS templates
+├── app.js # Main server file
+├── package.json
+├── .gitignore
+└── README.md
+
+
+---
+
+## ⚙️ Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+PORT=3000
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/todoListDB
