@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Continue</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="box">
+      <form action="/continue" method="POST">
+        <div class="item">
+          <input type="text" name="username" placeholder="Username" required />
+        </div>
+
+        <div class="item">
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+          />
+        </div>
+
+              <div class="item">
+          <input
+            type="submit"
+
+            required
+          />
+        </div>
+    
+      </form>
+    </div>
+    <style>
+      :root {
+        --bg-main: #ff6b6b;
+        --bg-gradient-light: #e0cece;
+        --bg-active: #ee5253;
+        --text-dark: #00204a;
+        --border-light: #f1f1f1;
+      }
+
+      html {
+        background-color: #e4e9fd;
+        background-image: -webkit-linear-gradient(
+          65deg,
+          var(--bg-main) 50%,
+          var(--bg-gradient-light) 50%
+        );
+        min-height: 100vh;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+          sans-serif;
+      }
+
+      h1 {
+        color: #fff;
+        padding: 10px;
+      }
+
+      .box {
+        max-width: 400px;
+        margin: 50px auto;
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3);
+        transition: transform 0.25s ease;
+      }
+
+      .box:hover {
+        transform: translateY(-3px);
+      }
+
+      #heading {
+        background-color: var(--bg-main);
+        text-align: center;
+      }
+
+      .item {
+        min-height: 70px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .item:last-child {
+        border-bottom: 0;
+      }
+
+      .item:hover {
+        background: #f5fffc;
+      }
+
+      input:checked + p {
+        text-decoration: line-through;
+        text-decoration-color: var(--bg-main);
+        color: #aaa;
+        transition: all 0.25s ease;
+      }
+
+      input[type="checkbox"] {
+        margin: 20px;
+        transform: scale(1.2);
+        cursor: pointer;
+      }
+
+      p {
+        margin: 0;
+        padding: 20px;
+        font-size: 20px;
+        font-weight: 200;
+        color: var(--text-dark);
+      }
+
+      form.item {
+        text-align: center;
+        margin-left: 20px;
+      }
+
+      button {
+        min-height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        border: none;
+        background-color: var(--bg-main);
+        color: #fff;
+        font-size: 30px;
+        padding-bottom: 6px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      button:active {
+        transform: scale(0.9);
+      }
+
+      @keyframes hvr-back-pulse {
+        50% {
+          background-color: var(--bg-active);
+        }
+      }
+
+      button:hover,
+      button:focus,
+      button:active {
+        animation: hvr-back-pulse 1s linear infinite 0.5s;
+        background-color: var(--bg-active);
+        color: #fff;
+      }
+
+      input[type="text"] {
+        text-align: center;
+        height: 70px;
+        border: none;
+        background: transparent;
+        font-size: 20px;
+        font-weight: 200;
+        width: 400px;
+      }
+
+      input[type="text"]:focus {
+        outline: none;
+        box-shadow: inset 0 -3px 0 0 var(--bg-main);
+      }
+
+      input[type="password"] {
+        text-align: center;
+        height: 70px;
+        border: none;
+        background: transparent;
+        font-size: 20px;
+        font-weight: 200;
+        width: 400px;
+      }
+
+      input[type="password"]:focus {
+        outline: none;
+        box-shadow: inset 0 -3px 0 0 var(--bg-main);
+      }
+
+      input[type="submit"] {
+        text-align: center;
+        height: 70px;
+        border: none;
+        background: transparent;
+        font-size: 20px;
+        font-weight: 200;
+        width: 400px;
+        color: #fff;
+        background-color: #ff6b6b;
+      }
+
+      input[type="submit"]:focus {
+        outline: none;
+        box-shadow: inset 0 -3px 0 0 var(--bg-main);
+        background-color: #ee5253;
+      }
+      
+
+      ::placeholder {
+        color: grey;
+        opacity: 1;
+      }
+
+      footer {
+        color: rgba(0, 0, 0, 0.5);
+        text-align: center;
+        margin-top: 5%;
+      }
+    </style>
+  </body>
+</html>

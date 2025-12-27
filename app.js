@@ -2,16 +2,35 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const _ = require("lodash");
-require("dotenv").config(); 
+require("dotenv").config();
 
-
-
+/* ================= 🔴 NEW ================= */
+const session = require("express-session");
+/* ========================================== */
 
 const PORT = process.env.PORT || 3000;
-// 🔹 CHANGED: clearer constant name
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
+/* ================= 🔴 NEW ================= */
+app.use(
+  session({
+    secret: "todo-secret-key",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+/* ========================================== */
+
+/* ================= 🔴 NEW ================= */
+app.use((req, res, next) => {
+  if (!req.session.userId) {
+    req.session.userId = new mongoose.Types.ObjectId().toString();
+  }
+  next();
+});
+/* ========================================== */
 
 app.set("view engine", "ejs");
 
@@ -20,25 +39,35 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB Atlas connected"))
   .catch(err => console.log(err));
 
-const taskSchema = new mongoose.Schema({ 
+/* ================= 🔴 UPDATED ================= */
+const taskSchema = new mongoose.Schema({
   name: String,
+  userId: String, // 🔴 NEW
 });
+/* ============================================ */
 
 const Task = mongoose.model("Task", taskSchema);
 
+/* ================= 🔴 UPDATED ================= */
 const listSchema = new mongoose.Schema({
   name: String,
+  userId: String, // 🔴 NEW
   items: [taskSchema],
 });
+/* ============================================ */
 
-const List = mongoose.model("List", listSchema); 
+const List = mongoose.model("List", listSchema);
 
 // ================= ROUTES =================
 
 // HOME (Today list)
 app.get("/", async (req, res) => {
   try {
-    const todayTasks = await Task.find({}); 
+    /* ================= 🔴 UPDATED ================= */
+    const todayTasks = await Task.find({
+      userId: req.session.userId,
+    });
+    /* ============================================ */
 
     res.render("index", {
       listTitle: "Today",
@@ -52,20 +81,27 @@ app.get("/", async (req, res) => {
 
 // DYNAMIC LIST ROUTE
 app.get("/:listName", async (req, res) => {
-  const listName = _.capitalize(req.params.listName); 
+  const listName = _.capitalize(req.params.listName);
 
-  if (listName === "Favicon.ico") {
-    return res.sendStatus(204);
-  }
+  if (listName === "Favicon.ico") return res.sendStatus(204);
 
   try {
-    let foundList = await List.findOne({ name: listName }); 
+    /* ================= 🔴 UPDATED ================= */
+    let foundList = await List.findOne({
+      name: listName,
+      userId: req.session.userId,
+    });
+    /* ============================================ */
 
     if (!foundList) {
+      /* ================= 🔴 UPDATED ================= */
       foundList = new List({
         name: listName,
+        userId: req.session.userId,
         items: [],
       });
+      /* ============================================ */
+
       await foundList.save();
     }
 
@@ -81,25 +117,33 @@ app.get("/:listName", async (req, res) => {
 
 // ADD TASK
 app.post("/", async (req, res) => {
-  const taskName = req.body.task; 
-  const listName = _.capitalize(req.body.submitBtn); 
+  const taskName = req.body.task;
+  const listName = _.capitalize(req.body.submitBtn);
 
-  
   if (!taskName || taskName.trim() === "") {
     return res.redirect(listName === "Today" ? "/" : "/" + listName);
   }
 
-  const newTask = new Task({ 
+  /* ================= 🔴 UPDATED ================= */
+  const newTask = new Task({
     name: taskName,
+    userId: req.session.userId,
   });
+  /* ============================================ */
 
   if (listName === "Today") {
     await newTask.save();
     return res.redirect("/");
   }
 
-  const foundList = await List.findOne({ name: listName });
-  if (!foundList) return res.redirect("/"); 
+  /* ================= 🔴 UPDATED ================= */
+  const foundList = await List.findOne({
+    name: listName,
+    userId: req.session.userId,
+  });
+  /* ============================================ */
+
+  if (!foundList) return res.redirect("/");
 
   foundList.items.push(newTask);
   await foundList.save();
@@ -110,18 +154,26 @@ app.post("/", async (req, res) => {
 // DELETE TASK
 app.post("/delete", async (req, res) => {
   try {
-    const taskId = req.body.checkbox; 
-    const listName = _.capitalize(req.body.listName); 
+    const taskId = req.body.checkbox;
+    const listName = _.capitalize(req.body.listName);
 
     if (listName === "Today") {
-      await Task.findByIdAndDelete(taskId);
+      /* ================= 🔴 UPDATED ================= */
+      await Task.findOneAndDelete({
+        _id: taskId,
+        userId: req.session.userId,
+      });
+      /* ============================================ */
+
       return res.redirect("/");
     }
 
+    /* ================= 🔴 UPDATED ================= */
     await List.findOneAndUpdate(
-      { name: listName },
+      { name: listName, userId: req.session.userId },
       { $pull: { items: { _id: taskId } } }
     );
+    /* ============================================ */
 
     res.redirect("/" + listName);
   } catch (error) {
